@@ -24,6 +24,13 @@ jobs:
     - name: Build with Maven
       run: mvn package
 
+    - name: Run tests
+      run: mvn -Dtest=TestDatabase test
+
+    - name: Build jar
+      run: mvn -DskipTests package
+
+
   trivy_scan:
     name: Scan With Trivy 
     runs-on: self-hosted
