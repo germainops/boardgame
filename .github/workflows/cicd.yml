@@ -45,7 +45,7 @@ jobs:
 
     - name: Scan Artifact with Trivy
       run: |
-        trivy fs --format trivy-scan-report.html .
+        trivy fs --format table -o trivy-scan-report.json .
 
   sonar_scan:
     name: Scan with SonarQube
