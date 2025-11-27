@@ -168,7 +168,6 @@ jobs:
       - name: Build Docker image
         run: docker build -t $IMAGE_NAME:latest .
 
-      # CHANGED: installation fiable
       - name: Install Syft if missing
         run: |
           if ! command -v syft >/dev/null 2>&1; then
@@ -241,3 +240,19 @@ jobs:
           docker tag $IMAGE_NAME:latest $IMAGE_NAME:${{ github.sha }}
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:${{ github.sha }}
+
+  deploy_on_kubernetes:
+    name: Deploy on Kubernetes
+    runs-on: self-hosted
+    needs: push_image
+    
+    steps:
+    - name: Kubectl actions
+      uses: tale/kubectl-action@v1
+      with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+      run: |
+          kubectl apply -f deployment-service.yml -n webapps
+          kubectl get svc - n webapps
+
+      
