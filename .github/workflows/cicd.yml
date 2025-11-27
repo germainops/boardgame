@@ -150,7 +150,8 @@ jobs:
       - name: Install Syft if missing
         run: |
           if ! command -v syft >/dev/null 2>&1; then
-            curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+            curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \
+              | sudo sh -s -- -b /usr/local/bin
           fi
           syft version
 
