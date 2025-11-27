@@ -9,7 +9,7 @@ permissions:
   security-events: write   
 
 env:
-  IMAGE_NAME: germainops/boardgame
+  IMAGE_NAME: 0geek/boardgame
   TRIVY_FAIL_SEVERITIES: "MEDIUM,HIGH"
   GITLEAKS_VERSION: "8.23.0"
 
