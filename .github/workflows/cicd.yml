@@ -4,10 +4,14 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+  security-events: write   
+
 env:
   IMAGE_NAME: germainops/boardgame
-  TRIVY_FAIL_SEVERITIES: "MEDIUM,HIGH"  
-  GITLEAKS_VERSION: "8.23.0"           
+  TRIVY_FAIL_SEVERITIES: "MEDIUM,HIGH"
+  GITLEAKS_VERSION: "8.23.0"
 
 jobs:
 
@@ -35,7 +39,6 @@ jobs:
           name: app-jar
           path: target/*.jar
 
-
   trivy_scan_jar:
     name: Trivy scan (JAR)
     runs-on: self-hosted
@@ -62,7 +65,7 @@ jobs:
           trivy fs target --severity $TRIVY_FAIL_SEVERITIES --exit-code 1 || echo "Vulns detected >= $TRIVY_FAIL_SEVERITIES"
 
       - name: Upload SARIF for GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-jar.sarif
 
@@ -71,7 +74,6 @@ jobs:
         with:
           name: trivy-jar-json
           path: trivy-jar.json
-
 
   secret_scan:
     name: GitLeaks secret scan
@@ -94,10 +96,9 @@ jobs:
           gitleaks detect --source=. --report-format sarif --report-path gitleaks.sarif
 
       - name: Upload GitLeaks SARIF
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
-
 
   sonar_scan:
     name: SonarQube - Code quality & security
@@ -123,7 +124,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-
 
   build_image:
     name: Build Docker image + SBOM
@@ -162,7 +162,6 @@ jobs:
           name: sbom
           path: sbom.cdx.json
 
-
   trivy_scan_image:
     name: Trivy scan (Docker Image)
     runs-on: self-hosted
@@ -183,7 +182,7 @@ jobs:
           trivy image --severity $TRIVY_FAIL_SEVERITIES --exit-code 1 $IMAGE_NAME:latest || echo "Vulns detected >= $TRIVY_FAIL_SEVERITIES"
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-image.sarif
 
@@ -192,7 +191,6 @@ jobs:
         with:
           name: trivy-image-json
           path: trivy-image.json
-
 
   push_image:
     name: Push Docker image
