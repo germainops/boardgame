@@ -89,9 +89,6 @@ jobs:
     steps:
     - name: Checkout the project
       uses: actions/checkout@v4
-      
-    - name: Setup QEMU
-      uses: docker/setup-qemu-actions@v3
 
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
